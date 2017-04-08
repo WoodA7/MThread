@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -15,6 +10,26 @@ namespace MThread
         public Form1()
         {
             InitializeComponent();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var po = new ParallelOptions {MaxDegreeOfParallelism = 8};
+            const string path = @"D:\dismc.log";
+
+            Parallel.ForEach(File.ReadAllLines(path), po, s =>
+            {
+                rtbLog.BeginInvoke(new MethodInvoker(() =>
+                {
+                    write(s);
+                }));
+            });
+
+        }
+
+        private void write(string text)
+        {
+            rtbLog.AppendText(text+Environment.NewLine);
         }
     }
 }
